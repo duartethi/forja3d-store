@@ -760,7 +760,7 @@ export default function Forja3DStore() {
             <div className="flex gap-4">
               <a className="text-sm hover:underline" href="#">Política de envio</a>
               <a className="text-sm hover:underline" href={`https://wa.me/${WHATSAPP_PHONE}`} target="_blank" rel="noreferrer">Contato</a>
-              <a className="text-sm hover:underline" href="#">Instagram</a>
+              <a className="text-sm hover:underline" href={`https://instagram.com/lojaforja3d`} target="_blank" rel="noreferrer">Instagram</a>
             </div>
           </div>
         </footer>
