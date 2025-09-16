@@ -262,13 +262,11 @@ export default function Forja3DStore() {
           className="flex items-center gap-3 md:gap-4 cursor-pointer"
           onClick={() => setView((v) => ({ ...v, page: isMobile ? "shop" : "home" }))}
         >
-          <div className="w-12 h-12 md:w-14 md:h-14 flex items-center justify-center rounded-xl bg-neutral-900 text-white shadow-lg">
-            <svg viewBox="0 0 24 24" className="w-8 h-8 md:w-10 md:h-10" fill="none" stroke="currentColor" strokeWidth="1.5">
-              <path d="M3 15c0 0 3-4 9-4s9 4 9 4" strokeLinecap="round" strokeLinejoin="round" />
-              <path d="M7 10l5-7 5 7" strokeLinecap="round" strokeLinejoin="round" />
-              <rect x="6" y="15" width="12" height="3" rx="1" />
-            </svg>
-          </div>
+          <img
+            src="/logo.png"
+            alt="Forja 3D Logo"
+            className="w-12 h-12 md:w-14 md:h-14 object-contain"
+          />
           <div>
             {/* Título com a fonte Cinzel */}
             <h1 className="text-xl md:text-2xl font-black tracking-tight font-['Cinzel']">{BRAND_NAME}</h1>
