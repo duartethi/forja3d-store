@@ -263,7 +263,7 @@ export default function Forja3DStore() {
           onClick={() => setView((v) => ({ ...v, page: isMobile ? "shop" : "home" }))}
         >
           <img
-            src="/logo.jpeg"
+            src="/logo.png"
             alt="Forja 3D Logo"
             className="w-12 h-12 md:w-14 md:h-14 object-contain"
           />
