@@ -265,7 +265,7 @@ export default function Forja3DStore() {
           <img
             src="/logo.png"
             alt="Forja 3D Logo"
-            className="w-20 h-20 md:w-24 md:h-24 object-contain"
+            className="w-16 h-16 md:w-18 md:h-18 object-contain"
           />
           <div>
             {/* Título com a fonte Cinzel */}
