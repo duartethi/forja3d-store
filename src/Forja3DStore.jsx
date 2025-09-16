@@ -757,7 +757,7 @@ export default function Forja3DStore() {
         <footer className="mt-14 md:mt-16 border-t pt-8 pb-20 md:pb-16">
           <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6 px-4 md:px-6">
             <div className="text-sm text-neutral-500">
-              © {new Date().getFullYear()} {BRAND_NAME} — Feito com paixão nerd
+              © {new Date().getFullYear()} {BRAND_NAME} — Feito com paixão nerd.
             </div>
             <div className="flex gap-4">
               <a className="text-sm hover:underline" href="#">Política de envio</a>
