@@ -1,0 +1,3 @@
+import logo from "./assets/logo.png";
+
+<img src={logo} alt="Forja 3D Logo" className="w-12 h-12" />
