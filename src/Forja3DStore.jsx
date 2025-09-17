@@ -181,25 +181,33 @@ export default function Forja3DStore() {
 
   // ---- WhatsApp ----
   function buildWhatsAppMessage({ name, email, address, cep, note }) {
-    const lines = [];
-    lines.push(`Olá! Tenho interesse em comprar no ${BRAND_NAME}.`);
-    lines.push("");
-    lines.push("Itens do pedido:");
-    cart.forEach((c) => lines.push(`- ${c.title} x${c.qty} — ${fmtBRL(c.price * c.qty)}`));
-    lines.push("");
-    lines.push(`Subtotal: ${fmtBRL(subtotal)}`);
-    lines.push("Frete: informar");
-    lines.push("Pagamento: enviar link (Pix/cartão)");
-    lines.push("");
-    lines.push("Dados do comprador:");
-    if (name) lines.push(`• Nome: ${name}`);
-    if (email) lines.push(`• E-mail: ${email}`);
-    if (address) lines.push(`• Endereço: ${address}`);
-    if (cep) lines.push(`• CEP: ${cep}`);
-    if (note) lines.push(`• Observações: ${note}`);
-    lines.push("");
-    lines.push("Pode me enviar o link de pagamento e o valor do frete, por favor?");
-    const msg = encodeURIComponent(lines.join("\\n"));
+    const linhas = [];
+  
+    linhas.push(`*${BRAND_NAME}*`);
+    linhas.push(`*Pedido via site*`);
+    linhas.push('────────────────────');
+    linhas.push('*Itens do pedido:*');
+  
+    cart.forEach((c) => {
+      linhas.push(`• ${c.title} x${c.qty} — ${fmtBRL(c.price * c.qty)}`);
+    });
+  
+    linhas.push(''); // linha em branco
+    linhas.push(`*Subtotal:* ${fmtBRL(subtotal)}`);
+    linhas.push(`*Frete:* informar`);
+    linhas.push(`*Pagamento:* enviar link (Pix/cartão)`);
+    linhas.push(''); 
+    linhas.push('*Dados do comprador:*');
+    if (name)    linhas.push(`• Nome: ${name}`);
+    if (email)   linhas.push(`• E-mail: ${email}`);
+    if (address) linhas.push(`• Endereço: ${address}`);
+    if (cep)     linhas.push(`• CEP: ${cep}`);
+    if (note)    linhas.push(`• Observações: ${note}`);
+    linhas.push('');
+    linhas.push('Por favor, envie o link de pagamento e o valor do frete.');
+  
+    // Aqui é o pulo do gato: use "\n" (e não "\\n")
+    const msg = encodeURIComponent(linhas.join("\n"));
     return `https://wa.me/${WHATSAPP_PHONE}?text=${msg}`;
   }
   function openWhatsAppWithOrder(formData) {
