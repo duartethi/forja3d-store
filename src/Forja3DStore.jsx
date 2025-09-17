@@ -652,10 +652,10 @@ export default function Forja3DStore() {
                   e.preventDefault();
                   const fd = Object.fromEntries(new FormData(e.currentTarget).entries());
                   const msg = encodeURIComponent(
-                    `Olá! Quero uma peça personalizada.\\n\\n` +
-                      `Título: ${fd.title || "(sem título)"}\\n` +
-                      `Descrição: ${fd.description || ""}\\n` +
-                      `Nome: ${fd.name}\\n` +
+                    `Olá! Quero uma peça personalizada.\n\n` +
+                      `Título: ${fd.title || "(sem título)"}\n` +
+                      `Descrição: ${fd.description || ""}\n` +
+                      `Nome: ${fd.name}\n` +
                       `E-mail: ${fd.email}`
                   );
                   window.open(`https://wa.me/${WHATSAPP_PHONE}?text=${msg}`, "_blank");
