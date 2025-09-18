@@ -640,7 +640,93 @@ export default function Forja3DStore() {
             </div>
           </section>
         )}
-
+        {/* POLÍTICA DE ENVIO */}
+        {view.page === "shipping" && (
+          <section className="max-w-3xl mx-auto">
+            <div className="flex items-center gap-2 mb-3 md:mb-4">
+              <button
+                className="text-sm text-neutral-600 underline"
+                onClick={() => setView((v) => ({ ...v, page: isMobile ? "shop" : "home" }))}
+              >
+                ← Voltar
+              </button>
+            </div>
+        
+            <article className="bg-white rounded-2xl p-6 md:p-8 shadow">
+              <h2 className="text-2xl font-extrabold mb-4">Política de Envio</h2>
+              <p className="text-neutral-600 mb-6">
+                Esta Política de Envio descreve como a <span className="font-semibold">{BRAND_NAME}</span> processa e envia
+                seus pedidos. Trabalhamos com peças em estoque e também com impressão 3D sob demanda.
+              </p>
+        
+              <div className="space-y-6">
+                <section>
+                  <h3 className="text-lg font-bold mb-2">1. Prazo de Produção</h3>
+                  <ul className="list-disc pl-5 space-y-1 text-neutral-700">
+                    <li><span className="font-medium">Produtos em estoque:</span> postamos em até <span className="font-medium">3 dias úteis</span> após confirmação do pagamento.</li>
+                    <li><span className="font-medium">Produtos sob encomenda/personalizados:</span> produção em <span className="font-medium">7 a 15 dias úteis</span>, conforme complexidade e fila. O prazo estimado é informado no pedido.</li>
+                  </ul>
+                </section>
+        
+                <section>
+                  <h3 className="text-lg font-bold mb-2">2. Prazo de Entrega</h3>
+                  <ul className="list-disc pl-5 space-y-1 text-neutral-700">
+                    <li>O prazo varia conforme a transportadora (Correios ou parceira) e destino.</li>
+                    <li>Enviamos o <span className="font-medium">código de rastreio</span> após a postagem.</li>
+                  </ul>
+                </section>
+        
+                <section>
+                  <h3 className="text-lg font-bold mb-2">3. Frete</h3>
+                  <ul className="list-disc pl-5 space-y-1 text-neutral-700">
+                    <li>O valor do frete é informado antes da confirmação do pedido no WhatsApp.</li>
+                    <li>Retirada local pode ser combinada de forma excepcional (mediante disponibilidade).</li>
+                  </ul>
+                </section>
+        
+                <section>
+                  <h3 className="text-lg font-bold mb-2">4. Embalagem</h3>
+                  <ul className="list-disc pl-5 space-y-1 text-neutral-700">
+                    <li>As peças são enviadas com <span className="font-medium">embalagem protetiva</span> para evitar danos.</li>
+                    <li>Se o produto chegar danificado, entre em contato em até <span className="font-medium">7 dias corridos</span> após o recebimento para suporte.</li>
+                  </ul>
+                </section>
+        
+                <section>
+                  <h3 className="text-lg font-bold mb-2">5. Atrasos</h3>
+                  <ul className="list-disc pl-5 space-y-1 text-neutral-700">
+                    <li>Podem ocorrer atrasos decorrentes de responsabilidade da transportadora, greves, eventos climáticos ou fatores externos.</li>
+                    <li>A <span className="font-medium">{BRAND_NAME}</span> acompanhará com você até a finalização da entrega.</li>
+                  </ul>
+                </section>
+        
+                <section>
+                  <h3 className="text-lg font-bold mb-2">6. Endereço Incorreto ou Tentativas de Entrega</h3>
+                  <ul className="list-disc pl-5 space-y-1 text-neutral-700">
+                    <li>Confira atentamente o endereço informado. Reenvios por endereço incorreto podem gerar <span className="font-medium">novo frete</span>.</li>
+                    <li>Em caso de devolução por ausência nas tentativas de entrega, poderemos cobrar <span className="font-medium">novo envio</span>.</li>
+                  </ul>
+                </section>
+        
+                <section>
+                  <h3 className="text-lg font-bold mb-2">7. Dúvidas e Contato</h3>
+                  <p className="text-neutral-700">
+                    Fale conosco pelo WhatsApp oficial:&nbsp;
+                    <a
+                      className="text-indigo-600 underline"
+                      href={`https://wa.me/${WHATSAPP_PHONE}`}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      abrir conversa
+                    </a>.
+                  </p>
+                </section>
+              </div>
+            </article>
+          </section>
+        )}
+        
         {/* Encomenda personalizada */}
         {view.page === "custom" && (
           <section>
@@ -766,7 +852,17 @@ export default function Forja3DStore() {
               © {new Date().getFullYear()} {BRAND_NAME} — Feito com paixão nerd.
             </div>
             <div className="flex gap-4">
-              <a className="text-sm hover:underline" href="#">Política de envio</a>
+              <a 
+                className="text-sm hover:underline" 
+                href="#"
+                onClick={(e) => {
+                  e.preventDefault();
+                  setView((v) => ({ ...v, page: "shipping" }));
+                  window.scrollTo({ top: 0, behavior: "smooth" });
+                }}
+                >
+                  Política de envio
+              </a>
               <a className="text-sm hover:underline" href={`https://wa.me/${WHATSAPP_PHONE}`} target="_blank" rel="noreferrer">Contato</a>
               <a className="text-sm hover:underline" href={`https://instagram.com/lojaforja3d`} target="_blank" rel="noreferrer">Instagram</a>
             </div>
