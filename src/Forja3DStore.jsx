@@ -863,8 +863,8 @@ export default function Forja3DStore() {
                 >
                   Política de envio
               </a>
-              <a className="text-sm hover:underline" href={`https://wa.me/${WHATSAPP_PHONE}`} target="_blank" rel="noreferrer">Contato</a>
-              <a className="text-sm hover:underline" href={`https://instagram.com/lojaforja3d`} target="_blank" rel="noreferrer">Instagram</a>
+              <a className="text-sm hover:underline" href={`https://wa.me/${WHATSAPP_PHONE}`} target="_blank" rel="noopener noreferrer">Contato</a>
+              <a className="text-sm hover:underline" href={`https://instagram.com/lojaforja3d`} target="_blank" rel="noopener noreferrer">Instagram</a>
             </div>
           </div>
         </footer>
@@ -874,7 +874,7 @@ export default function Forja3DStore() {
       <a
         href={`https://wa.me/${WHATSAPP_PHONE}`}
         target="_blank"
-        rel="noreferrer"
+        rel="noopener noreferrer"
         className="fixed bottom-6 right-6 bg-green-600 text-white rounded-full shadow-lg px-5 py-3 flex items-center gap-2"
         aria-label="Abrir WhatsApp"
       >
