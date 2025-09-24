@@ -29,7 +29,7 @@ export default function Forja3DStore() {
       categories: ["Decoração", "Figures"],
       rarity: "raro",
       isNew: true,
-      desc: "Dê mais personalidade ao seu banheiro! Um suporte para papel higiênico 3D impresso com perninhas articuladas, que garante charme e diversão ao ambiente. Perfeito para presentes criativos ou para deixar seu espaço único.",
+      desc: "Dê mais personalidade ao seu banheiro! Um suporte para papel higiênico 3D impresso com perninhas articuladas, que garante charme e diversão ao ambiente.",
       media: [
         { type: "image", src: "/suporte-papel-higienico.jpeg" },
         { type: "image", src: "https://picsum.photos/seed/fig1b/800/800" },
