@@ -24,14 +24,14 @@ export default function Forja3DStore() {
   const sampleProducts = [
     {
       id: "p1",
-      title: "Figurine - Guerreiro Épico",
-      price: 79.9,
-      categories: ["Figures", "Colecionáveis"],
-      rarity: "épico",
+      title: "Suporte de Papel Higiênico com Perninhas",
+      price: 19.99,
+      categories: ["Decoração", "Figures"],
+      rarity: "raro",
       isNew: true,
-      desc: "Figura detalhada 3D com acabamento premium. Altura: 18cm.",
+      desc: "Dê mais personalidade ao seu banheiro! Um suporte para papel higiênico 3D impresso com perninhas articuladas, que garante charme e diversão ao ambiente. Perfeito para presentes criativos ou para deixar seu espaço único.",
       media: [
-        { type: "image", src: "https://picsum.photos/seed/fig1a/800/800" },
+        { type: "image", src: "/suporte-papel-higienico.jpeg" },
         { type: "image", src: "https://picsum.photos/seed/fig1b/800/800" },
         { type: "video", src: "https://www.w3schools.com/html/mov_bbb.mp4" },
       ],
@@ -67,7 +67,7 @@ export default function Forja3DStore() {
       title: "Copo Mágico (Thermal) - Runas",
       price: 59.9,
       categories: ["Copos", "Utilidades"],
-      rarity: "raro",
+      rarity: "épico",
       isNew: false,
       desc: "Copo com design de runas — mantém a temperatura por mais tempo.",
       media: [
