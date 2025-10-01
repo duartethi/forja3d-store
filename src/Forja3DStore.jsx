@@ -241,7 +241,10 @@ export default function Forja3DStore() {
     if (item.type === "video") {
       return <video key={item.src} src={item.src} controls className="w-full h-64 md:h-80 rounded-lg bg-black object-contain" />;
     }
-    return <img key={item.src} src={item.src} className="w-full h-64 md:h-80 object-cover rounded-lg" alt="" />;
+    return(
+      <div className="w-full h-64 md:h-80 rounded-lg bg-white grid place-items-center">
+        <img key={item.src} src={item.src} className="max-w-full h-64 md:h-80 object-cover rounded-lg" alt="" />;
+      </div>
   }
 
   // ---- Mobile defaults ----
@@ -430,7 +433,14 @@ export default function Forja3DStore() {
                     }}
                     title="Ver detalhes"
                   >
-                    <img src={getPrimaryMediaSrc(p)} className="w-full h-48 object-cover rounded-lg mb-3" alt={p.title} />
+                    <div className="w-full aspect-[4/3] bg-white rounded-lg mb-3 grid place-items-center overflow-hidden">
+                      <img
+                        src={getPrimaryMediaSrc(p)}
+                        alt={p.title}
+                        className="max-w-full max-h-full object-contain"
+                        loading="lazy"
+                      />
+                    </div>
                   </button>
                   <div className="flex items-center justify-between">
                     <div>
@@ -479,12 +489,14 @@ export default function Forja3DStore() {
                     title="Ver detalhes"
                     style={{ aspectRatio: "4 / 3" }}
                   >
-                    <img
-                      src={getPrimaryMediaSrc(p)}
-                      alt={p.title}
-                      className="w-full h-full object-cover"
-                      loading="lazy"
-                    />
+                    <div className="w-full h-full bg-white grid place-items-center">
+                      <img
+                        src={getPrimaryMediaSrc(p)}
+                        alt={p.title}
+                        className="max-w-full h-full object-cover"
+                        loading="lazy"
+                      />
+                      </div>
                   </button>
 
                   <div className="flex items-start justify-between gap-2">
@@ -788,7 +800,7 @@ export default function Forja3DStore() {
                           title={m.type}
                         >
                           {m.type === "image" ? (
-                            <img src={m.src} className="w-full h-full object-cover" alt="" />
+                            <img src={m.src} className="max-w-full max-h-full object-cover" alt="" />
                           ) : (
                             <div className="w-full h-full bg-black text-white text-xs flex items-center justify-center">Vídeo</div>
                           )}
