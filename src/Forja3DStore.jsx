@@ -182,31 +182,30 @@ export default function Forja3DStore() {
   // ---- WhatsApp ----
   function buildWhatsAppMessage({ name, email, address, cep, note }) {
     const linhas = [];
-  
+
     linhas.push(`*${BRAND_NAME}*`);
     linhas.push(`*Pedido via site*`);
-    linhas.push('────────────────────');
-    linhas.push('*Itens do pedido:*');
-  
+    linhas.push("────────────────────");
+    linhas.push("*Itens do pedido:*");
+
     cart.forEach((c) => {
       linhas.push(`• ${c.title} x${c.qty} — ${fmtBRL(c.price * c.qty)}`);
     });
-  
-    linhas.push(''); // linha em branco
+
+    linhas.push(""); // linha em branco
     linhas.push(`*Subtotal:* ${fmtBRL(subtotal)}`);
     linhas.push(`*Frete:* informar`);
     linhas.push(`*Pagamento:* enviar link (Pix/cartão)`);
-    linhas.push(''); 
-    linhas.push('*Dados do comprador:*');
-    if (name)    linhas.push(`• Nome: ${name}`);
-    if (email)   linhas.push(`• E-mail: ${email}`);
+    linhas.push("");
+    linhas.push("*Dados do comprador:*");
+    if (name) linhas.push(`• Nome: ${name}`);
+    if (email) linhas.push(`• E-mail: ${email}`);
     if (address) linhas.push(`• Endereço: ${address}`);
-    if (cep)     linhas.push(`• CEP: ${cep}`);
-    if (note)    linhas.push(`• Observações: ${note}`);
-    linhas.push('');
-    linhas.push('Por favor, envie o link de pagamento e o valor do frete.');
-  
-    // Aqui é o pulo do gato: use "\n" (e não "\\n")
+    if (cep) linhas.push(`• CEP: ${cep}`);
+    if (note) linhas.push(`• Observações: ${note}`);
+    linhas.push("");
+    linhas.push("Por favor, envie o link de pagamento e o valor do frete.");
+
     const msg = encodeURIComponent(linhas.join("\n"));
     return `https://wa.me/${WHATSAPP_PHONE}?text=${msg}`;
   }
@@ -235,16 +234,31 @@ export default function Forja3DStore() {
     const img = product.media.find((m) => m.type === "image");
     return img ? img.src : "https://picsum.photos/seed/placeholder/800/800";
   }
+
+  // >>> ProductMediaViewer sem cortes <<<
   function ProductMediaViewer({ media, index }) {
     const item = media[index];
     if (!item) return null;
     if (item.type === "video") {
-      return <video key={item.src} src={item.src} controls className="w-full h-64 md:h-80 rounded-lg bg-black object-contain" />;
+      return (
+        <video
+          key={item.src}
+          src={item.src}
+          controls
+          className="w-full h-64 md:h-80 rounded-lg bg-black object-contain"
+        />
+      );
     }
-    return(
+    return (
       <div className="w-full h-64 md:h-80 rounded-lg bg-white grid place-items-center">
-        <img key={item.src} src={item.src} className="max-w-full h-64 md:h-80 object-cover rounded-lg" alt="" />;
+        <img
+          key={item.src}
+          src={item.src}
+          className="max-w-full max-h-full object-contain"
+          alt=""
+        />
       </div>
+    );
   }
 
   // ---- Mobile defaults ----
@@ -265,7 +279,6 @@ export default function Forja3DStore() {
   const novidadesList = newItems.length > 0 ? newItems : products.slice(0, 6);
 
   return (
-    // trava arrasto lateral
     <div className="min-h-screen bg-neutral-50 text-neutral-900 overflow-x-hidden overscroll-x-none">
       {/* Header */}
       <header className="max-w-6xl mx-auto p-4 md:p-6 flex items-center justify-between">
@@ -279,7 +292,6 @@ export default function Forja3DStore() {
             className="w-16 h-16 md:w-20 md:h-20 object-contain"
           />
           <div>
-            {/* Título com a fonte Cinzel */}
             <h1 className="text-xl md:text-2xl font-black tracking-tight font-['Cinzel']">{BRAND_NAME}</h1>
             <p className="md:hidden text-xs text-neutral-600">Geek • RPG • Feito com paixão nerd.</p>
             <p className="hidden md:block text-sm text-neutral-600">Geek • RPG • Feito com paixão nerd.</p>
@@ -338,7 +350,7 @@ export default function Forja3DStore() {
         </div>
       </div>
 
-      {/* Barra fixa MOBILE: busca + chips */}
+      {/* Barra fixa MOBILE */}
       <div className="md:hidden sticky top-0 z-40 bg-neutral-50/95 backdrop-blur border-b">
         <div className="max-w-6xl mx-auto px-4 py-2">
           <form onSubmit={onSearchSubmit} className="flex items-center gap-2 bg-white rounded-full px-3 py-2 shadow-sm">
@@ -466,7 +478,7 @@ export default function Forja3DStore() {
           </section>
         )}
 
-        {/* CATÁLOGO — mobile (1 col) + desktop (2–3 col) */}
+        {/* CATÁLOGO — mobile + desktop */}
         {view.page === "shop" && (
           <section className="mt-4">
             <div className="hidden md:flex items-center justify-between mb-2">
@@ -493,10 +505,10 @@ export default function Forja3DStore() {
                       <img
                         src={getPrimaryMediaSrc(p)}
                         alt={p.title}
-                        className="max-w-full h-full object-cover"
+                        className="max-w-full max-h-full object-contain"
                         loading="lazy"
                       />
-                      </div>
+                    </div>
                   </button>
 
                   <div className="flex items-start justify-between gap-2">
@@ -548,7 +560,13 @@ export default function Forja3DStore() {
                 <div className="md:col-span-2 bg-white rounded-2xl p-6 shadow">
                   {cart.map((c) => (
                     <div key={c.id} className="flex items-center gap-4 border-b py-4">
-                      {c.thumb ? <img src={c.thumb} className="w-20 h-20 object-cover rounded" alt="" /> : <div className="w-20 h-20 bg-neutral-200 rounded" />}
+                      {c.thumb ? (
+                        <div className="w-20 h-20 rounded bg-white grid place-items-center">
+                          <img src={c.thumb} className="max-w-full max-h-full object-contain" alt="" />
+                        </div>
+                      ) : (
+                        <div className="w-20 h-20 bg-neutral-200 rounded" />
+                      )}
                       <div className="flex-1">
                         <div className="flex items-center justify-between">
                           <div>
@@ -652,6 +670,7 @@ export default function Forja3DStore() {
             </div>
           </section>
         )}
+
         {/* POLÍTICA DE ENVIO */}
         {view.page === "shipping" && (
           <section className="max-w-3xl mx-auto">
@@ -663,14 +682,14 @@ export default function Forja3DStore() {
                 ← Voltar
               </button>
             </div>
-        
+
             <article className="bg-white rounded-2xl p-6 md:p-8 shadow">
               <h2 className="text-2xl font-extrabold mb-4">Política de Envio</h2>
               <p className="text-neutral-600 mb-6">
                 Esta Política de Envio descreve como a <span className="font-semibold">{BRAND_NAME}</span> processa e envia
                 seus pedidos. Trabalhamos com peças em estoque e também com impressão 3D sob demanda.
               </p>
-        
+
               <div className="space-y-6">
                 <section>
                   <h3 className="text-lg font-bold mb-2">1. Prazo de Produção</h3>
@@ -679,7 +698,7 @@ export default function Forja3DStore() {
                     <li><span className="font-medium">Produtos sob encomenda/personalizados:</span> produção em <span className="font-medium">7 a 15 dias úteis</span>, conforme complexidade e fila. O prazo estimado é informado no pedido.</li>
                   </ul>
                 </section>
-        
+
                 <section>
                   <h3 className="text-lg font-bold mb-2">2. Prazo de Entrega</h3>
                   <ul className="list-disc pl-5 space-y-1 text-neutral-700">
@@ -687,7 +706,7 @@ export default function Forja3DStore() {
                     <li>Enviamos o <span className="font-medium">código de rastreio</span> após a postagem.</li>
                   </ul>
                 </section>
-        
+
                 <section>
                   <h3 className="text-lg font-bold mb-2">3. Frete</h3>
                   <ul className="list-disc pl-5 space-y-1 text-neutral-700">
@@ -695,7 +714,7 @@ export default function Forja3DStore() {
                     <li>Retirada local pode ser combinada de forma excepcional (mediante disponibilidade).</li>
                   </ul>
                 </section>
-        
+
                 <section>
                   <h3 className="text-lg font-bold mb-2">4. Embalagem</h3>
                   <ul className="list-disc pl-5 space-y-1 text-neutral-700">
@@ -703,7 +722,7 @@ export default function Forja3DStore() {
                     <li>Se o produto chegar danificado, entre em contato em até <span className="font-medium">7 dias corridos</span> após o recebimento para suporte.</li>
                   </ul>
                 </section>
-        
+
                 <section>
                   <h3 className="text-lg font-bold mb-2">5. Atrasos</h3>
                   <ul className="list-disc pl-5 space-y-1 text-neutral-700">
@@ -711,7 +730,7 @@ export default function Forja3DStore() {
                     <li>A <span className="font-medium">{BRAND_NAME}</span> acompanhará com você até a finalização da entrega.</li>
                   </ul>
                 </section>
-        
+
                 <section>
                   <h3 className="text-lg font-bold mb-2">6. Endereço Incorreto ou Tentativas de Entrega</h3>
                   <ul className="list-disc pl-5 space-y-1 text-neutral-700">
@@ -719,7 +738,7 @@ export default function Forja3DStore() {
                     <li>Em caso de devolução por ausência nas tentativas de entrega, poderemos cobrar <span className="font-medium">novo envio</span>.</li>
                   </ul>
                 </section>
-        
+
                 <section>
                   <h3 className="text-lg font-bold mb-2">7. Dúvidas e Contato</h3>
                   <p className="text-neutral-700">
@@ -738,7 +757,7 @@ export default function Forja3DStore() {
             </article>
           </section>
         )}
-        
+
         {/* Encomenda personalizada */}
         {view.page === "custom" && (
           <section>
@@ -795,12 +814,12 @@ export default function Forja3DStore() {
                       {selected.media.map((m, idx) => (
                         <button
                           key={m.src + idx}
-                          className={`border rounded-md overflow-hidden w-20 h-20 flex items-center justify-center ${idx === activeMediaIndex ? "ring-2 ring-indigo-500" : ""}`}
+                          className={`border rounded-md overflow-hidden w-20 h-20 grid place-items-center bg-white ${idx === activeMediaIndex ? "ring-2 ring-indigo-500" : ""}`}
                           onClick={() => setActiveMediaIndex(idx)}
                           title={m.type}
                         >
                           {m.type === "image" ? (
-                            <img src={m.src} className="max-w-full max-h-full object-cover" alt="" />
+                            <img src={m.src} className="max-w-full max-h-full object-contain" alt="" />
                           ) : (
                             <div className="w-full h-full bg-black text-white text-xs flex items-center justify-center">Vídeo</div>
                           )}
@@ -872,8 +891,8 @@ export default function Forja3DStore() {
                   setView((v) => ({ ...v, page: "shipping" }));
                   window.scrollTo({ top: 0, behavior: "smooth" });
                 }}
-                >
-                  Política de envio
+              >
+                Política de envio
               </a>
               <a className="text-sm hover:underline" href={`https://wa.me/${WHATSAPP_PHONE}`} target="_blank" rel="noopener noreferrer">Contato</a>
               <a className="text-sm hover:underline" href={`https://instagram.com/lojaforja3d`} target="_blank" rel="noopener noreferrer">Instagram</a>
