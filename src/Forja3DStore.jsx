@@ -3,12 +3,57 @@ import { motion, AnimatePresence } from "framer-motion";
 
 /**
  * Forja3D - Loja/landing (mobile-first + desktop)
- * Separação corrigida: "Novidades" e "Catálogo" agora são páginas distintas.
- * Fonte do título "Forja 3D": Cinzel (Google Fonts).
+ * As imagens agora usam object-contain dentro de caixas com aspect-ratio.
  */
 
-const WHATSAPP_PHONE = "5524998635828"; // Ex.: 55DDDNUMERO
+const WHATSAPP_PHONE = "55249986358286"; // Ex.: 55DDDNUMERO
 const BRAND_NAME = "Forja 3D";
+
+// ★ Componente utilitário para exibir mídia SEM CORTAR
+function MediaBox({ src, alt = "", ratio = "4 / 3" }) {
+  return (
+    <div
+      className="relative w-full bg-white rounded-lg overflow-hidden grid place-items-center"
+      style={{ aspectRatio: ratio }}
+    >
+      <img
+        src={src}
+        alt={alt}
+        className="absolute inset-0 w-full h-full object-contain"
+        loading="lazy"
+      />
+    </div>
+  );
+}
+
+// ★ Viewer do modal/galleria com object-contain e limite de altura
+function ProductMediaViewer({ media, index }) {
+  const item = media?.[index];
+  if (!item) return null;
+
+  // área de mídia do modal: usa até 65vh e mantém proporção sem cortar
+  return (
+    <div className="relative w-full bg-black/5 rounded-lg overflow-hidden" style={{ maxHeight: "65vh" }}>
+      {item.type === "video" ? (
+        <video
+          key={item.src}
+          src={item.src}
+          controls
+          className="w-full h-full"
+          style={{ maxHeight: "65vh", objectFit: "contain" }} // ★
+        />
+      ) : (
+        <img
+          key={item.src}
+          src={item.src}
+          alt=""
+          className="w-full h-full"
+          style={{ maxHeight: "65vh", objectFit: "contain" }} // ★
+        />
+      )}
+    </div>
+  );
+}
 
 export default function Forja3DStore() {
   // ---- Carregar fonte Cinzel (Google Fonts) só para o título ----
@@ -182,17 +227,14 @@ export default function Forja3DStore() {
   // ---- WhatsApp ----
   function buildWhatsAppMessage({ name, email, address, cep, note }) {
     const linhas = [];
-
     linhas.push(`*${BRAND_NAME}*`);
     linhas.push(`*Pedido via site*`);
     linhas.push("────────────────────");
     linhas.push("*Itens do pedido:*");
-
     cart.forEach((c) => {
       linhas.push(`• ${c.title} x${c.qty} — ${fmtBRL(c.price * c.qty)}`);
     });
-
-    linhas.push(""); // linha em branco
+    linhas.push("");
     linhas.push(`*Subtotal:* ${fmtBRL(subtotal)}`);
     linhas.push(`*Frete:* informar`);
     linhas.push(`*Pagamento:* enviar link (Pix/cartão)`);
@@ -205,7 +247,6 @@ export default function Forja3DStore() {
     if (note) linhas.push(`• Observações: ${note}`);
     linhas.push("");
     linhas.push("Por favor, envie o link de pagamento e o valor do frete.");
-
     const msg = encodeURIComponent(linhas.join("\n"));
     return `https://wa.me/${WHATSAPP_PHONE}?text=${msg}`;
   }
@@ -235,32 +276,6 @@ export default function Forja3DStore() {
     return img ? img.src : "https://picsum.photos/seed/placeholder/800/800";
   }
 
-  // >>> ProductMediaViewer sem cortes <<<
-  function ProductMediaViewer({ media, index }) {
-    const item = media[index];
-    if (!item) return null;
-    if (item.type === "video") {
-      return (
-        <video
-          key={item.src}
-          src={item.src}
-          controls
-          className="w-full h-64 md:h-80 rounded-lg bg-black object-contain"
-        />
-      );
-    }
-    return (
-      <div className="w-full h-64 md:h-80 rounded-lg bg-white grid place-items-center">
-        <img
-          key={item.src}
-          src={item.src}
-          className="max-w-full max-h-full object-contain"
-          alt=""
-        />
-      </div>
-    );
-  }
-
   // ---- Mobile defaults ----
   const [isMobile, setIsMobile] = useState(false);
   useEffect(() => {
@@ -286,11 +301,7 @@ export default function Forja3DStore() {
           className="flex items-center gap-3 md:gap-4 cursor-pointer"
           onClick={() => setView((v) => ({ ...v, page: isMobile ? "shop" : "home" }))}
         >
-          <img
-            src="/logo.png"
-            alt="Forja 3D Logo"
-            className="w-16 h-16 md:w-20 md:h-20 object-contain"
-          />
+          <img src="/logo.png" alt="Forja 3D Logo" className="w-16 h-16 md:w-20 md:h-20 object-contain" />
           <div>
             <h1 className="text-xl md:text-2xl font-black tracking-tight font-['Cinzel']">{BRAND_NAME}</h1>
             <p className="md:hidden text-xs text-neutral-600">Geek • RPG • Feito com paixão nerd.</p>
@@ -309,7 +320,9 @@ export default function Forja3DStore() {
             value={typedQuery}
             onChange={(e) => setTypedQuery(e.target.value)}
           />
-          <button type="submit" className="text-sm px-2 py-1 rounded bg-indigo-600 text-white">Buscar</button>
+          <button type="submit" className="text-sm px-2 py-1 rounded bg-indigo-600 text-white">
+            Buscar
+          </button>
         </form>
 
         <button
@@ -350,7 +363,7 @@ export default function Forja3DStore() {
         </div>
       </div>
 
-      {/* Barra fixa MOBILE */}
+      {/* Barra fixa MOBILE: busca + chips */}
       <div className="md:hidden sticky top-0 z-40 bg-neutral-50/95 backdrop-blur border-b">
         <div className="max-w-6xl mx-auto px-4 py-2">
           <form onSubmit={onSearchSubmit} className="flex items-center gap-2 bg-white rounded-full px-3 py-2 shadow-sm">
@@ -360,7 +373,9 @@ export default function Forja3DStore() {
               value={typedQuery}
               onChange={(e) => setTypedQuery(e.target.value)}
             />
-            <button type="submit" className="text-xs px-3 py-1 rounded bg-indigo-600 text-white whitespace-nowrap">Buscar</button>
+            <button type="submit" className="text-xs px-3 py-1 rounded bg-indigo-600 text-white whitespace-nowrap">
+              Buscar
+            </button>
           </form>
 
           <div className="mt-2 flex gap-2 overflow-x-auto pb-1 max-w-full">
@@ -400,7 +415,10 @@ export default function Forja3DStore() {
                   Figures, chaveiros personalizados, vasos temáticos e decoração para gamers e colecionadores.
                 </p>
                 <div className="mt-4 flex gap-3">
-                  <button className="px-4 py-2 bg-indigo-600 text-white rounded-lg shadow" onClick={() => setView((v) => ({ ...v, page: "shop" }))}>
+                  <button
+                    className="px-4 py-2 bg-indigo-600 text-white rounded-lg shadow"
+                    onClick={() => setView((v) => ({ ...v, page: "shop" }))}
+                  >
                     Ver catálogo
                   </button>
                   <button className="px-4 py-2 border rounded-lg" onClick={() => setView((v) => ({ ...v, page: "custom" }))}>
@@ -445,14 +463,8 @@ export default function Forja3DStore() {
                     }}
                     title="Ver detalhes"
                   >
-                    <div className="w-full aspect-[4/3] bg-white rounded-lg mb-3 grid place-items-center overflow-hidden">
-                      <img
-                        src={getPrimaryMediaSrc(p)}
-                        alt={p.title}
-                        className="max-w-full max-h-full object-contain"
-                        loading="lazy"
-                      />
-                    </div>
+                    {/* ★ Sem cortes */}
+                    <MediaBox src={getPrimaryMediaSrc(p)} alt={p.title} ratio="4 / 3" />
                   </button>
                   <div className="flex items-center justify-between">
                     <div>
@@ -464,7 +476,13 @@ export default function Forja3DStore() {
                   <div className="mt-3 flex items-center justify-between">
                     <div className="text-lg font-bold">{fmtBRL(p.price)}</div>
                     <div className="flex gap-2">
-                      <button className="px-3 py-1 rounded-lg border" onClick={() => { setSelected(p); setActiveMediaIndex(0); }}>
+                      <button
+                        className="px-3 py-1 rounded-lg border"
+                        onClick={() => {
+                          setSelected(p);
+                          setActiveMediaIndex(0);
+                        }}
+                      >
                         Ver
                       </button>
                       <button className="px-3 py-1 rounded-lg bg-indigo-600 text-white" onClick={() => addToCart(p)}>
@@ -478,7 +496,7 @@ export default function Forja3DStore() {
           </section>
         )}
 
-        {/* CATÁLOGO — mobile + desktop */}
+        {/* CATÁLOGO — mobile (1 col) + desktop (2–3 col) */}
         {view.page === "shop" && (
           <section className="mt-4">
             <div className="hidden md:flex items-center justify-between mb-2">
@@ -499,16 +517,9 @@ export default function Forja3DStore() {
                       setActiveMediaIndex(0);
                     }}
                     title="Ver detalhes"
-                    style={{ aspectRatio: "4 / 3" }}
                   >
-                    <div className="w-full h-full bg-white grid place-items-center">
-                      <img
-                        src={getPrimaryMediaSrc(p)}
-                        alt={p.title}
-                        className="max-w-full max-h-full object-contain"
-                        loading="lazy"
-                      />
-                    </div>
+                    {/* ★ Sem cortes com proporção 4:3 */}
+                    <MediaBox src={getPrimaryMediaSrc(p)} alt={p.title} ratio="4 / 3" />
                   </button>
 
                   <div className="flex items-start justify-between gap-2">
@@ -561,9 +572,7 @@ export default function Forja3DStore() {
                   {cart.map((c) => (
                     <div key={c.id} className="flex items-center gap-4 border-b py-4">
                       {c.thumb ? (
-                        <div className="w-20 h-20 rounded bg-white grid place-items-center">
-                          <img src={c.thumb} className="max-w-full max-h-full object-contain" alt="" />
-                        </div>
+                        <img src={c.thumb} className="w-20 h-20 object-cover rounded" alt="" />
                       ) : (
                         <div className="w-20 h-20 bg-neutral-200 rounded" />
                       )}
@@ -576,10 +585,16 @@ export default function Forja3DStore() {
                           <div className="text-sm">{fmtBRL(c.price * c.qty)}</div>
                         </div>
                         <div className="mt-2 flex items-center gap-2">
-                          <button className="px-2 py-1 border rounded" onClick={() => changeQty(c.id, c.qty - 1)}>-</button>
+                          <button className="px-2 py-1 border rounded" onClick={() => changeQty(c.id, c.qty - 1)}>
+                            -
+                          </button>
                           <div className="px-3 py-1 border rounded">{c.qty}</div>
-                          <button className="px-2 py-1 border rounded" onClick={() => changeQty(c.id, c.qty + 1)}>+</button>
-                          <button className="ml-4 text-sm text-red-500" onClick={() => removeFromCart(c.id)}>Remover</button>
+                          <button className="px-2 py-1 border rounded" onClick={() => changeQty(c.id, c.qty + 1)}>
+                            +
+                          </button>
+                          <button className="ml-4 text-sm text-red-500" onClick={() => removeFromCart(c.id)}>
+                            Remover
+                          </button>
                         </div>
                       </div>
                     </div>
@@ -642,7 +657,9 @@ export default function Forja3DStore() {
                 <label className="block mb-2 text-sm font-semibold">Observações / Personalização</label>
                 <textarea name="note" className="w-full border rounded px-3 py-2 mb-3" placeholder="Ex: Gravura no chaveiro: TH" />
 
-                <button type="submit" className="w-full px-4 py-2 bg-green-600 text-white rounded-lg">Enviar pedido no WhatsApp</button>
+                <button type="submit" className="w-full px-4 py-2 bg-green-600 text-white rounded-lg">
+                  Enviar pedido no WhatsApp
+                </button>
                 <p className="text-xs text-neutral-500 mt-2">
                   Você será redirecionado para o WhatsApp com o resumo do pedido. Lá você receberá o link de pagamento (Pix/cartão) e o valor do frete.
                 </p>
@@ -652,7 +669,9 @@ export default function Forja3DStore() {
                 <div className="text-sm text-neutral-500 mb-2">Itens</div>
                 {cart.map((c) => (
                   <div key={c.id} className="flex items-center justify-between mb-3">
-                    <div className="text-sm">{c.title} x{c.qty}</div>
+                    <div className="text-sm">
+                      {c.title} x{c.qty}
+                    </div>
                     <div className="text-sm font-semibold">{fmtBRL(c.price * c.qty)}</div>
                   </div>
                 ))}
@@ -675,10 +694,7 @@ export default function Forja3DStore() {
         {view.page === "shipping" && (
           <section className="max-w-3xl mx-auto">
             <div className="flex items-center gap-2 mb-3 md:mb-4">
-              <button
-                className="text-sm text-neutral-600 underline"
-                onClick={() => setView((v) => ({ ...v, page: isMobile ? "shop" : "home" }))}
-              >
+              <button className="text-sm text-neutral-600 underline" onClick={() => setView((v) => ({ ...v, page: isMobile ? "shop" : "home" }))}>
                 ← Voltar
               </button>
             </div>
@@ -686,16 +702,20 @@ export default function Forja3DStore() {
             <article className="bg-white rounded-2xl p-6 md:p-8 shadow">
               <h2 className="text-2xl font-extrabold mb-4">Política de Envio</h2>
               <p className="text-neutral-600 mb-6">
-                Esta Política de Envio descreve como a <span className="font-semibold">{BRAND_NAME}</span> processa e envia
-                seus pedidos. Trabalhamos com peças em estoque e também com impressão 3D sob demanda.
+                Esta Política de Envio descreve como a <span className="font-semibold">{BRAND_NAME}</span> processa e envia seus pedidos. Trabalhamos com peças em
+                estoque e também com impressão 3D sob demanda.
               </p>
 
               <div className="space-y-6">
                 <section>
                   <h3 className="text-lg font-bold mb-2">1. Prazo de Produção</h3>
                   <ul className="list-disc pl-5 space-y-1 text-neutral-700">
-                    <li><span className="font-medium">Produtos em estoque:</span> postamos em até <span className="font-medium">3 dias úteis</span> após confirmação do pagamento.</li>
-                    <li><span className="font-medium">Produtos sob encomenda/personalizados:</span> produção em <span className="font-medium">7 a 15 dias úteis</span>, conforme complexidade e fila. O prazo estimado é informado no pedido.</li>
+                    <li>
+                      <span className="font-medium">Produtos em estoque:</span> postamos em até <span className="font-medium">3 dias úteis</span> após confirmação do pagamento.
+                    </li>
+                    <li>
+                      <span className="font-medium">Produtos sob encomenda/personalizados:</span> produção em <span className="font-medium">7 a 15 dias úteis</span>, conforme complexidade e fila. O prazo estimado é informado no pedido.
+                    </li>
                   </ul>
                 </section>
 
@@ -703,7 +723,9 @@ export default function Forja3DStore() {
                   <h3 className="text-lg font-bold mb-2">2. Prazo de Entrega</h3>
                   <ul className="list-disc pl-5 space-y-1 text-neutral-700">
                     <li>O prazo varia conforme a transportadora (Correios ou parceira) e destino.</li>
-                    <li>Enviamos o <span className="font-medium">código de rastreio</span> após a postagem.</li>
+                    <li>
+                      Enviamos o <span className="font-medium">código de rastreio</span> após a postagem.
+                    </li>
                   </ul>
                 </section>
 
@@ -718,8 +740,12 @@ export default function Forja3DStore() {
                 <section>
                   <h3 className="text-lg font-bold mb-2">4. Embalagem</h3>
                   <ul className="list-disc pl-5 space-y-1 text-neutral-700">
-                    <li>As peças são enviadas com <span className="font-medium">embalagem protetiva</span> para evitar danos.</li>
-                    <li>Se o produto chegar danificado, entre em contato em até <span className="font-medium">7 dias corridos</span> após o recebimento para suporte.</li>
+                    <li>
+                      As peças são enviadas com <span className="font-medium">embalagem protetiva</span> para evitar danos.
+                    </li>
+                    <li>
+                      Se o produto chegar danificado, entre em contato em até <span className="font-medium">7 dias corridos</span> após o recebimento para suporte.
+                    </li>
                   </ul>
                 </section>
 
@@ -727,15 +753,21 @@ export default function Forja3DStore() {
                   <h3 className="text-lg font-bold mb-2">5. Atrasos</h3>
                   <ul className="list-disc pl-5 space-y-1 text-neutral-700">
                     <li>Podem ocorrer atrasos decorrentes de responsabilidade da transportadora, greves, eventos climáticos ou fatores externos.</li>
-                    <li>A <span className="font-medium">{BRAND_NAME}</span> acompanhará com você até a finalização da entrega.</li>
+                    <li>
+                      A <span className="font-medium">{BRAND_NAME}</span> acompanhará com você até a finalização da entrega.
+                    </li>
                   </ul>
                 </section>
 
                 <section>
                   <h3 className="text-lg font-bold mb-2">6. Endereço Incorreto ou Tentativas de Entrega</h3>
                   <ul className="list-disc pl-5 space-y-1 text-neutral-700">
-                    <li>Confira atentamente o endereço informado. Reenvios por endereço incorreto podem gerar <span className="font-medium">novo frete</span>.</li>
-                    <li>Em caso de devolução por ausência nas tentativas de entrega, poderemos cobrar <span className="font-medium">novo envio</span>.</li>
+                    <li>
+                      Confira atentamente o endereço informado. Reenvios por endereço incorreto podem gerar <span className="font-medium">novo frete</span>.
+                    </li>
+                    <li>
+                      Em caso de devolução por ausência nas tentativas de entrega, poderemos cobrar <span className="font-medium">novo envio</span>.
+                    </li>
                   </ul>
                 </section>
 
@@ -743,14 +775,10 @@ export default function Forja3DStore() {
                   <h3 className="text-lg font-bold mb-2">7. Dúvidas e Contato</h3>
                   <p className="text-neutral-700">
                     Fale conosco pelo WhatsApp oficial:&nbsp;
-                    <a
-                      className="text-indigo-600 underline"
-                      href={`https://wa.me/${WHATSAPP_PHONE}`}
-                      target="_blank"
-                      rel="noreferrer"
-                    >
+                    <a className="text-indigo-600 underline" href={`https://wa.me/${WHATSAPP_PHONE}`} target="_blank" rel="noreferrer">
                       abrir conversa
-                    </a>.
+                    </a>
+                    .
                   </p>
                 </section>
               </div>
@@ -799,13 +827,14 @@ export default function Forja3DStore() {
         {/* Modal de produto com galeria */}
         <AnimatePresence>
           {selected && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="fixed inset-0 z-50 flex items-center justify-center p-6"
-            >
-              <div className="absolute inset-0 bg-black/40" onClick={() => { setSelected(null); setActiveMediaIndex(0); }} />
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-50 flex items-center justify-center p-6">
+              <div
+                className="absolute inset-0 bg-black/40"
+                onClick={() => {
+                  setSelected(null);
+                  setActiveMediaIndex(0);
+                }}
+              />
               <motion.div initial={{ y: 20 }} animate={{ y: 0 }} exit={{ y: 20 }} className="bg-white rounded-2xl p-6 shadow-lg z-10 max-w-3xl w-full">
                 <div className="flex flex-col gap-4">
                   <ProductMediaViewer media={selected.media || []} index={activeMediaIndex} />
@@ -814,12 +843,14 @@ export default function Forja3DStore() {
                       {selected.media.map((m, idx) => (
                         <button
                           key={m.src + idx}
-                          className={`border rounded-md overflow-hidden w-20 h-20 grid place-items-center bg-white ${idx === activeMediaIndex ? "ring-2 ring-indigo-500" : ""}`}
+                          className={`border rounded-md overflow-hidden w-20 h-20 flex items-center justify-center ${
+                            idx === activeMediaIndex ? "ring-2 ring-indigo-500" : ""
+                          }`}
                           onClick={() => setActiveMediaIndex(idx)}
                           title={m.type}
                         >
                           {m.type === "image" ? (
-                            <img src={m.src} className="max-w-full max-h-full object-contain" alt="" />
+                            <img src={m.src} className="w-full h-full object-contain" alt="" /> // ★ contain no thumb também
                           ) : (
                             <div className="w-full h-full bg-black text-white text-xs flex items-center justify-center">Vídeo</div>
                           )}
@@ -843,11 +874,21 @@ export default function Forja3DStore() {
                     <div className="flex flex-col gap-2">
                       <button
                         className="px-4 py-2 bg-indigo-600 text-white rounded-lg"
-                        onClick={() => { addToCart(selected); setSelected(null); setActiveMediaIndex(0); }}
+                        onClick={() => {
+                          addToCart(selected);
+                          setSelected(null);
+                          setActiveMediaIndex(0);
+                        }}
                       >
                         Adicionar ao carrinho
                       </button>
-                      <button className="px-4 py-2 border rounded-lg" onClick={() => { setSelected(null); setActiveMediaIndex(0); }}>
+                      <button
+                        className="px-4 py-2 border rounded-lg"
+                        onClick={() => {
+                          setSelected(null);
+                          setActiveMediaIndex(0);
+                        }}
+                      >
                         Fechar
                       </button>
                     </div>
@@ -869,9 +910,7 @@ export default function Forja3DStore() {
               className="fixed bottom-6 left-1/2 -translate-x-1/2 z-[60]"
               aria-live="assertive"
             >
-              <div className="px-4 py-2 rounded-full bg-neutral-900 text-white shadow-lg text-sm">
-                {toastMsg}
-              </div>
+              <div className="px-4 py-2 rounded-full bg-neutral-900 text-white shadow-lg text-sm">{toastMsg}</div>
             </motion.div>
           )}
         </AnimatePresence>
@@ -879,12 +918,10 @@ export default function Forja3DStore() {
         {/* Rodapé */}
         <footer className="mt-14 md:mt-16 border-t pt-8 pb-20 md:pb-16">
           <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6 px-4 md:px-6">
-            <div className="text-sm text-neutral-500">
-              © {new Date().getFullYear()} {BRAND_NAME} — Feito com paixão nerd.
-            </div>
+            <div className="text-sm text-neutral-500">© {new Date().getFullYear()} {BRAND_NAME} — Feito com paixão nerd.</div>
             <div className="flex gap-4">
-              <a 
-                className="text-sm hover:underline" 
+              <a
+                className="text-sm hover:underline"
                 href="#"
                 onClick={(e) => {
                   e.preventDefault();
@@ -894,8 +931,12 @@ export default function Forja3DStore() {
               >
                 Política de envio
               </a>
-              <a className="text-sm hover:underline" href={`https://wa.me/${WHATSAPP_PHONE}`} target="_blank" rel="noopener noreferrer">Contato</a>
-              <a className="text-sm hover:underline" href={`https://instagram.com/lojaforja3d`} target="_blank" rel="noopener noreferrer">Instagram</a>
+              <a className="text-sm hover:underline" href={`https://wa.me/${WHATSAPP_PHONE}`} target="_blank" rel="noopener noreferrer">
+                Contato
+              </a>
+              <a className="text-sm hover:underline" href={`https://instagram.com/lojaforja3d`} target="_blank" rel="noopener noreferrer">
+                Instagram
+              </a>
             </div>
           </div>
         </footer>
