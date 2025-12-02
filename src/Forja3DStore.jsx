@@ -239,9 +239,27 @@ export default function Forja3DStore() {
     const item = media[index];
     if (!item) return null;
     if (item.type === "video") {
-      return <video key={item.src} src={item.src} controls className="w-full h-64 md:h-80 rounded-lg bg-black object-contain" />;
+      return (
+        <div className="w-full rounded-xl overflow-hidden bg-neutral-100">
+          <video
+            key={item.src}
+            src={item.src}
+            controls
+            className="w-full max-h-[70vh] object-contain bg-black"
+          />
+        </div>
+      );
     }
-    return <img key={item.src} src={item.src} className="w-full h-64 md:h-80 object-cover rounded-lg" alt="" />;
+    return (
+      <div className="w-full rounded-xl overflow-hidden bg-neutral-100">
+        <img
+          key={item.src}
+          src={item.src}
+          className="w-full max-h-[70vh] object-contain"
+          alt=""
+        />
+      </div>
+    );
   }
 
   // ---- Mobile defaults ----
@@ -783,12 +801,12 @@ export default function Forja3DStore() {
                       {selected.media.map((m, idx) => (
                         <button
                           key={m.src + idx}
-                          className={`border rounded-md overflow-hidden w-20 h-20 flex items-center justify-center ${idx === activeMediaIndex ? "ring-2 ring-indigo-500" : ""}`}
+                          className={`border rounded-md overflow-hidden w-24 h-24 flex items-center justify-center bg-white ${idx === activeMediaIndex ? "ring-2 ring-indigo-500" : ""}`}
                           onClick={() => setActiveMediaIndex(idx)}
                           title={m.type}
                         >
                           {m.type === "image" ? (
-                            <img src={m.src} className="w-full h-full object-cover" alt="" />
+                            <img src={m.src} className="w-full h-full object-contain" alt="" />
                           ) : (
                             <div className="w-full h-full bg-black text-white text-xs flex items-center justify-center">Vídeo</div>
                           )}
